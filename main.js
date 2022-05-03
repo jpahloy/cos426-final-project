@@ -317,7 +317,12 @@ var removeCellGuiButton = function() {
 }
 
 var simulateGuiButton = function() {
-    applicationMode = SIMULATE_MODE;
+    if (applicationMode == SIMULATE_MODE) {
+        applicationMode = DRAW_MODE;
+    }
+    else {
+        applicationMode = SIMULATE_MODE;
+    }
 }
 
 
@@ -368,31 +373,22 @@ mainCanvas.onmouseleave = function(e) {
 
 
 mainCanvas.onmousemove = function(e) {
+    mouse.x = e.clientX - rect.left;
+    mouse.y = e.clientY - rect.top;
 
+    if (mouse.isDown && cellStrokeStack.length > 0) {
+        var currentCell = cellStrokeStack[cellStrokeStack.length - 1];
 
-    if (applicationMode == DRAW_MODE) {
-        mouse.x = e.clientX - rect.left;
-        mouse.y = e.clientY - rect.top;
-
-        if (mouse.isDown && cellStrokeStack.length > 0) {
-            var currentCell = cellStrokeStack[cellStrokeStack.length - 1];
-
-            if (controlsGUIdict.brushSize < 1) {
-                simulation.setCellAtMousePos(currentCell, mouse.x, mouse.y);
-            }
-            else {
-                for (var x = mouse.x - 4*controlsGUIdict.brushSize; x <= mouse.x + 4*controlsGUIdict.brushSize; x += 4) {
-                    for (var y = mouse.y - 4*controlsGUIdict.brushSize; y <= mouse.y + 4*controlsGUIdict.brushSize; y += 4) {
-                        simulation.setCellAtMousePos(currentCell, x, y);
-                    }
-                }
-            }            
+        if (controlsGUIdict.brushSize < 1) {
+            simulation.setCellAtMousePos(currentCell, mouse.x, mouse.y);
         }
-
-        
-    }
-    else if (applicationMode == SIMULATE_MODE) {
-        return;
+        else {
+            for (var x = mouse.x - 4*controlsGUIdict.brushSize; x <= mouse.x + 4*controlsGUIdict.brushSize; x += 4) {
+                for (var y = mouse.y - 4*controlsGUIdict.brushSize; y <= mouse.y + 4*controlsGUIdict.brushSize; y += 4) {
+                    simulation.setCellAtMousePos(currentCell, x, y);
+                }
+            }
+        }            
     }
 }
 
